@@ -3,22 +3,29 @@ package com.itheima.springbootinit.Goods;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+
 
 @Table(name = "goods")
 @Entity
+@Validated
 public class Goods {
     @Id
     private String name;
-    private int id;
+    private String description;
+    @Min(value = 0, message = "价格不能为负数")
     private int price;
     private boolean status;
 
     public Goods() {
     }
 
-    public Goods(String name, int id, int price, boolean status) {
+    public Goods(String name, String description, int price, boolean status) {
         this.name = name;
-        this.id = id;
+        this.description = description;
         this.price = price;
         this.status = status;
     }
@@ -27,8 +34,8 @@ public class Goods {
         return name;
     }
 
-    public int getId() {
-        return id;
+    public String getDescription() {
+        return description;
     }
 
     public int getPrice() {
@@ -43,8 +50,8 @@ public class Goods {
         this.name = name;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setDescription(String desc) {
+        this.description = desc;
     }
 
     public void setPrice(int price) {

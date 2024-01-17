@@ -9,11 +9,3 @@ spring:
       hibernate:
         hbm2ddl:
           auto: update
-
-
-name: wouinidp
-
-person:
-  name: ccvg
-  age: 18
-  birth: 2004-03-30

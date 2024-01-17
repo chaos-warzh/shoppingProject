@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class UserController {
     // 添加一个用户
     @GetMapping("/add")
     public User add (@RequestParam("name") String name,
-                     @RequestParam("age") int age,
+                     @RequestParam("age") @Min(value = 0, message = "年龄不能为负数") int age,
                      @RequestParam("id") int id,
                      @RequestParam("password") String password) {
         User user = new User();
