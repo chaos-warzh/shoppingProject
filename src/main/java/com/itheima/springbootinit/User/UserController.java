@@ -14,6 +14,17 @@ public class UserController {
     @Autowired
     UserDao userDao;
 
+    // 根据名字查找用户
+    @GetMapping("/getOne")
+    public User getOne(@RequestParam("name") String name) {
+        if (userDao.findById(name).isPresent()) {
+            User user = userDao.findById(name).get();
+            return user;
+        }
+        // unavailable ID
+        return null;
+    }
+
     // 得到数据库里的所有用户
     @GetMapping("/getAll")
     public List getAll() {
@@ -32,6 +43,13 @@ public class UserController {
                      @RequestParam("age") @Min(value = 0, message = "年龄不能为负数") int age,
                      @RequestParam("id") int id,
                      @RequestParam("password") String password) {
+        // check
+        if (getOne(name) != null) {
+            // registered
+            System.out.println("The name already existed!");
+            return null;
+        }
+
         User user = new User();
         user.setName(name);
         user.setAge(age);
