@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
-
 @Table(name = "goods")
 @Entity
 @Validated
@@ -19,15 +18,19 @@ public class Goods {
     @Min(value = 0, message = "价格不能为负数")
     private int price;
     private boolean status;
+    private String imagePath;
+    private GoodsType type;
 
     public Goods() {
     }
 
-    public Goods(String name, String description, int price, boolean status) {
+    public Goods(String name, String description, int price, boolean status, String imagePath, GoodsType type) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.status = status;
+        this.imagePath = imagePath;
+        this.type = type;
     }
 
     public String getName() {
@@ -60,5 +63,25 @@ public class Goods {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public GoodsType getType() {
+        return type;
+    }
+
+    public void setType(GoodsType type) {
+        this.type = type;
+    }
+
+    public String toString() {
+        return "name: " + name + " description: " + description + " price: " + price + " status: " + status + " imagePath: " + imagePath + " type: " + type;
     }
 }
