@@ -1,11 +1,14 @@
 package com.itheima.springbootinit.User;
 
+import com.itheima.springbootinit.Goods.Goods;
 import jakarta.persistence.*;
-import jdk.jfr.Unsigned;
+import org.hibernate.mapping.Collection;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Validated
 @Entity
@@ -24,7 +27,13 @@ public class User {
 
     private Integer balance; // 账户余额
 
+//    @Embedded
+//    @Transient
+    @OneToMany(targetEntity = Goods.class)
+    private List<Goods> shoppingCart;
+
     public User() {
+        shoppingCart = new ArrayList<>();
     }
     public String getName() {
         return name;
@@ -92,6 +101,32 @@ public class User {
         }
         return this.balance;
     }
+
+    public List<Goods> showCart() {
+        return Collections.unmodifiableList(shoppingCart);
+    }
+
+    public String addToCart(Goods goods) {
+        if (goods != null) {
+            shoppingCart.add(goods);
+            return "添加成功";
+        }
+        return "添加失败";
+    }
+
+    public String deleteFromCart(Goods goods) {
+        if (goods != null) {
+            shoppingCart.remove(goods);
+            return "删除成功";
+        }
+        return "删除失败";
+    }
+
+    public String clearCart() {
+        shoppingCart.clear();
+        return "全部删除成功";
+    }
+
 
     public String toString() {
         return "id: " + id + ", name: " + name + ", password: " + password + ", age: " + age;

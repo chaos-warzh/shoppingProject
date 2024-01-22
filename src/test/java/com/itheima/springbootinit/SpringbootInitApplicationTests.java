@@ -9,15 +9,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+
+import java.awt.font.ShapeGraphicAttribute;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -279,6 +283,63 @@ class SpringbootInitApplicationTests {
         assertEquals(1, response3.getId());
         assertEquals("123456", response3.getPassword());
         assertEquals(500000, response3.getBalance());
+
+        // 最后再次清空数据库, 有始有终.
+        clearSchema("");
+    }
+
+    @Test
+    void TestShoppingCart() {
+        // 先把数据库清空
+        clearSchema("");
+        clearSchema("Goods");
+
+        // 存入User数据
+        String url = "http://localhost:" + port + "/add?name=Wang&age=18&id=001&password=123456&balance=1000000";
+        // 得到返回值
+        User response = restTemplate.getForObject(url, User.class);
+        // 数据存入正常
+        assertEquals("Wang", response.getName());
+        assertEquals(18 , response.getAge());
+        assertEquals(1, response.getId());
+        assertEquals("123456", response.getPassword());
+        assertEquals(1000_000, response.getBalance());
+
+        // 创建goods对象
+        url = "http://localhost:" + port +
+            "/addGoods?name=微积分&description=不是数学分析&price=1&status=true" +
+            "&imagePath=C:\\Users\\DELL\\Downloads\\95版植物大战僵尸\\images\\Tombstones&type=学习与办公";
+        // 得到返回值
+        Goods response2 = restTemplate.getForObject(url, Goods.class);
+        assertEquals("微积分", response2.getName());
+        assertEquals("不是数学分析", response2.getDescription());
+        assertEquals(1, response2.getPrice());
+        assert(response2.getStatus());
+        assertEquals("C:\\Users\\DELL\\Downloads\\95版植物大战僵尸\\images\\Tombstones", response2.getImagePath());
+        assertEquals(GoodsType.学习与办公, response2.getType());
+        assertEquals(1, response2.getRestNum());
+
+
+        url = "http://localhost:" + port + "/addToCart?userName=Wang&goodsName=微积分";
+        String response3 = restTemplate.getForObject(url, String.class);
+        assertEquals("添加成功", response3);
+
+
+        url = "http://localhost:" + port + "/showCart?userName=Wang";
+
+        // 打印返回的内容
+//        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, String.class);
+//        String responseBody = responseEntity.getBody();
+//        System.out.println("Response Body: " + responseBody);
+
+        ParameterizedTypeReference<List<Goods>> responseType = new ParameterizedTypeReference<List<Goods>>() {};
+        ResponseEntity<List<Goods>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+        List<Goods> response4 = responseEntity.getBody();
+
+        // 可以正常查询到所需数据
+        assert response4 != null;
+        assertEquals(1, response4.size());
+        assertEquals("微积分", response4.get(0).getName());
 
         // 最后再次清空数据库, 有始有终.
         clearSchema("");

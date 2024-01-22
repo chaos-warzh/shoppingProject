@@ -1,6 +1,7 @@
 package com.itheima.springbootinit.User;
 
 import com.itheima.springbootinit.Goods.Goods;
+import com.itheima.springbootinit.Goods.GoodsDao;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +14,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Min;
 import java.io.File;
+import java.io.StreamCorruptedException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class UserController {
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    GoodsDao goodsDao;
 
     // 根据名字查找用户
     @GetMapping("/getOne")
@@ -145,5 +151,32 @@ public class UserController {
         User user = userDao.findByName(name);
         return "您现在的余额:" + user.changeBalance(changeNum, isPositive);
     }
+
+    // 购物车添加商品
+    @GetMapping("/addToCart")
+    @Transactional
+    public String addToCart(@RequestParam("userName") String userName, @RequestParam("goodsName") String goodsName) {
+        User user = userDao.findByName(userName);
+        Goods goods = goodsDao.findByName(goodsName);
+        return user.addToCart(goods);
+    }
+
+    // 购物车删除商品
+    @GetMapping("/deleteFromCart")
+    @Transactional
+    public String deleteFromCart(@RequestParam("userName") String userName, @RequestParam("goodsName") String goodsName) {
+        User user = userDao.findByName(userName);
+        Goods goods = goodsDao.findByName(goodsName);
+        return user.deleteFromCart(goods);
+    }
+
+    // 展示购物车
+    @GetMapping("/showCart")
+    @Transactional
+    public List<Goods> showCart(@RequestParam("userName") String userName) {
+        User user = userDao.findByName(userName);
+        return user.showCart();
+    }
+
 
 }
