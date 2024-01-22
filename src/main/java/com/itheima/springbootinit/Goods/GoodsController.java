@@ -151,4 +151,13 @@ public class GoodsController {
         return "全部商品删除成功";
     }
 
+    // 改变购物车中是否已选中的状态
+    @GetMapping("/changeSelected")
+    public void changeSelected(@RequestParam("name") String name) {
+        Goods goods = getByName(name);
+        if (goods != null) {
+            goods.setSelected(!goods.isSelected());
+        }
+    }
+
 }

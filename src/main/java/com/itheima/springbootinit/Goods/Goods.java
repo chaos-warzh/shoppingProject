@@ -26,6 +26,7 @@ public class Goods {
     private Integer restNum;
     private String passwordOfGoods;
     static final String defaultPasswordOfGoods = "cafebabe";
+    private boolean selected;
 
     public Goods() {
     }
@@ -41,6 +42,7 @@ public class Goods {
         this.restNum = restNum == null ? 1 : restNum;
         // 默认密码为 "cafebabe"
         this.passwordOfGoods = passwordOfGoods == null ? defaultPasswordOfGoods : passwordOfGoods;
+        this.selected = true;
     }
 
     public String getName() {
@@ -112,6 +114,14 @@ public class Goods {
 
     public void setPasswordOfGoods(String passwordOfGoods) {
         this.passwordOfGoods = passwordOfGoods;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 
     public String toString() {
