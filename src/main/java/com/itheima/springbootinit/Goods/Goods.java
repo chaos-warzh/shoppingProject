@@ -1,8 +1,11 @@
 package com.itheima.springbootinit.Goods;
 
+import com.itheima.springbootinit.User.User;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
@@ -20,17 +23,24 @@ public class Goods {
     private boolean status;
     private String imagePath;
     private GoodsType type;
+    private Integer restNum;
+    private String passwordOfGoods;
+    static final String defaultPasswordOfGoods = "cafebabe";
 
     public Goods() {
     }
 
-    public Goods(String name, String description, int price, boolean status, String imagePath, GoodsType type) {
+    public Goods(String name, String description, int price, boolean status, String imagePath, GoodsType type,
+                 @Nullable Integer restNum, @Nullable String passwordOfGoods) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.status = status;
         this.imagePath = imagePath;
         this.type = type;
+        this.restNum = restNum == null ? 1 : restNum;
+        // 默认密码为 "cafebabe"
+        this.passwordOfGoods = passwordOfGoods == null ? defaultPasswordOfGoods : passwordOfGoods;
     }
 
     public String getName() {
@@ -79,6 +89,29 @@ public class Goods {
 
     public void setType(GoodsType type) {
         this.type = type;
+    }
+
+    public int getRestNum() {
+        return restNum;
+    }
+
+    public void setRestNum(int restNum) {
+        if (restNum < 0) {
+            return;
+        }
+        this.restNum = restNum;
+    }
+    public void decreaseRestNum() {
+        if (restNum > 0)
+            restNum--;
+    }
+
+    public String getPasswordOfGoods() {
+        return passwordOfGoods;
+    }
+
+    public void setPasswordOfGoods(String passwordOfGoods) {
+        this.passwordOfGoods = passwordOfGoods;
     }
 
     public String toString() {

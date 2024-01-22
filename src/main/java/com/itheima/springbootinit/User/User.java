@@ -1,8 +1,6 @@
 package com.itheima.springbootinit.User;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jdk.jfr.Unsigned;
 import org.springframework.validation.annotation.Validated;
 
@@ -19,6 +17,10 @@ public class User {
     @Min(value = 0, message = "年龄不能为负数")
     private int age;
     private int id;
+
+    private String imagePath; // 用户头像
+
+    static final String defaultPath = "E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\_default_user_image.png";
 
     public User() {
     }
@@ -52,6 +54,14 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getImagePath() {
+        return imagePath;
     }
 
     public String toString() {

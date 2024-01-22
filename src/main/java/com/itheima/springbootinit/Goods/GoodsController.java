@@ -3,6 +3,7 @@ package com.itheima.springbootinit.Goods;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -45,7 +46,24 @@ public class GoodsController {
                           @RequestParam("price") int price,
                           @RequestParam("status") boolean status,
                           @RequestParam("imagePath") String imagePath,
-                          @RequestParam("type") GoodsType type) {
+                          @RequestParam("type") GoodsType type,
+                          @Nullable @RequestParam("restNum") Integer restNum,
+                          @Nullable @RequestParam("passwordOfGoods") String passwordOfGoods) {
+        if (restNum == null) {
+            restNum = 1;
+        }
+        if (passwordOfGoods == null) {
+            passwordOfGoods = Goods.defaultPasswordOfGoods;
+        }
+
+        if (getByName(name) != null) {
+            Goods goodsExisted = getByName(name);
+            if (!goodsExisted.getPasswordOfGoods().equals(passwordOfGoods)) {
+                // 认证失败
+                return null;
+            }
+        }
+
         Goods goods = new Goods();
         goods.setName(name);
         goods.setDescription(description);
@@ -53,6 +71,8 @@ public class GoodsController {
         goods.setStatus(status);
         goods.setImagePath(imagePath);
         goods.setType(type);
+        goods.setRestNum(restNum);
+        goods.setPasswordOfGoods(passwordOfGoods);
         Goods save = goodsDao.save(goods); // 持久化
         return save;
     }
@@ -112,8 +132,16 @@ public class GoodsController {
     @GetMapping("/deleteOneGoods")
     @Transactional
     public String deleteOne(@RequestParam("name") String name) {
-        goodsDao.deleteByName(name);
-        return "删除成功";
+        Goods goods = getByName(name);
+        if (goods != null) {
+            goods.decreaseRestNum();
+            if (goods.getRestNum() <= 0) {
+                goodsDao.deleteByName(name);
+                return "已删除此商品";
+            }
+            return "已减少一件商品";
+        }
+        return "无此商品";
     }
 
     // 删除所有商品

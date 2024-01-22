@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SpringbootInitApplicationTests {
@@ -79,6 +80,9 @@ class SpringbootInitApplicationTests {
 
     @Test
     void TestImage() throws IOException {
+        // 清除已有的商品表
+        clearSchema("Goods");
+
         // 创建goods对象
         String url = "http://localhost:" + port +
             "/addGoods?name=微积分&description=不是数学分析&price=1&status=true" +
@@ -129,6 +133,123 @@ class SpringbootInitApplicationTests {
 
         // 最后清空数据库
 //        clearSchema("Goods");
+    }
+
+    @Test
+    void TestImageDefault() throws IOException {
+        // 清空用户表
+        clearSchema("");
+
+        // 创建user对象
+        String url = "http://localhost:" + port +
+            "/add?name=ChihayaAnon&age=16&id=33&password=123456";
+
+        // 得到返回值
+        User response = restTemplate.getForObject(url, User.class);
+        assertEquals("ChihayaAnon", response.getName());
+        assertEquals(16, response.getAge());
+        assertEquals(33, response.getId());
+        assertEquals("E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\_default_user_image.png",
+            response.getImagePath());
+    }
+
+    @Test
+    void TestImageUser() throws IOException {
+        // 清空用户表
+        clearSchema("");
+
+        // 创建user对象
+        String url = "http://localhost:" + port +
+            "/add?name=ChihayaAnon&age=16&id=33&password=123456"
+            + "&imagePath=C:\\Users\\DELL\\Desktop\\imageSet\\anon.png";
+
+        // 得到返回值
+        User response = restTemplate.getForObject(url, User.class);
+        assertEquals("ChihayaAnon", response.getName());
+        assertEquals(16, response.getAge());
+        assertEquals(33, response.getId());
+        assertEquals("C:\\Users\\DELL\\Desktop\\imageSet\\anon.png", response.getImagePath());
+
+        // 图片路径
+        String imagePath = "C:\\Users\\DELL\\Desktop\\imageSet\\anon.png";
+
+        // Load the image as a Resource
+        Resource imageResource = new ByteArrayResource(Files.readAllBytes(Paths.get(imagePath))) {
+            @Override
+            public String getFilename() {
+                return "anon.png"; // Set the desired filename
+            }
+        };
+
+        // 准备数据
+        MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
+        map.add("file", imageResource);
+        map.add("userName", "ChihayaAnon");
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        // Create the request entity with headers and form data
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
+
+        // Make the POST request
+        ResponseEntity<String> response2 = restTemplate.exchange(
+            "http://localhost:" + port + "/updateUserImage?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8",
+            HttpMethod.POST,
+            requestEntity,
+            String.class
+        );
+
+        // Assert the response as needed
+        assert response2.hasBody();
+        assert response2.getBody().contains("images/ChihayaAnon.png");
+
+        // 最后清空数据库
+//        clearSchema("Goods");
+    }
+
+    @Test
+    void TestGoodsNum() {
+        // 清除已有的商品表
+        clearSchema("Goods");
+
+        // 创建goods对象
+        String url = "http://localhost:" + port +
+            "/addGoods?name=微积分&description=不是数学分析&price=1&status=true" +
+            "&imagePath=C:\\Users\\DELL\\Downloads\\95版植物大战僵尸\\images\\Tombstones&type=学习与办公";
+        // 得到返回值
+        Goods response = restTemplate.getForObject(url, Goods.class);
+        assertEquals("微积分", response.getName());
+        assertEquals("不是数学分析", response.getDescription());
+        assertEquals(1, response.getPrice());
+        assert(response.getStatus());
+        assertEquals("C:\\Users\\DELL\\Downloads\\95版植物大战僵尸\\images\\Tombstones", response.getImagePath());
+        assertEquals(GoodsType.学习与办公, response.getType());
+        assertEquals(1, response.getRestNum());
+
+         // 创建名字相同的goods对象, 数量变为100件
+        url = "http://localhost:" + port +
+            "/addGoods?name=微积分&description=不是数学分析&price=1&status=true" +
+            "&imagePath=C:\\Users\\DELL\\Downloads\\95版植物大战僵尸\\images\\Tombstones" +
+            "&type=学习与办公&restNum=100";
+        Goods response2 = restTemplate.getForObject(url, Goods.class);
+        assertEquals(100, response2.getRestNum());
+        url = "http://localhost:" + port + "/deleteOneGoods?name=微积分";
+        String response3 = restTemplate.getForObject(url, String.class);
+        assertEquals("已减少一件商品", response3);
+
+        url = "http://localhost:" + port + "/getByName?name=微积分";
+        Goods response4 = restTemplate.getForObject(url, Goods.class);
+        assertEquals(99, response4.getRestNum());
+
+        url = "http://localhost:" + port +
+            "/addGoods?name=微积分&description=不是数学分析&price=1&status=true" +
+            "&imagePath=C:\\Users\\DELL\\Downloads\\95版植物大战僵尸\\images\\Tombstones" +
+            "&type=学习与办公&restNum=100&passwordOfGoods=123456";
+        Goods response5 = restTemplate.getForObject(url, Goods.class);
+        assertNull(response5);
+
     }
 
 }
