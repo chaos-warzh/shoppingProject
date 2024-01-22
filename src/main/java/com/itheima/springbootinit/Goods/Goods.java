@@ -29,6 +29,10 @@ public class Goods {
     private boolean selected;
 
     public Goods() {
+        this.restNum = restNum == null ? 1 : restNum;
+        // 默认密码为 "cafebabe"
+        this.passwordOfGoods = passwordOfGoods == null ? defaultPasswordOfGoods : passwordOfGoods;
+        this.selected = true;
     }
 
     public Goods(String name, String description, int price, boolean status, String imagePath, GoodsType type,
