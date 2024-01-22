@@ -1,6 +1,7 @@
 package com.itheima.springbootinit.User;
 
 import com.itheima.springbootinit.Goods.Goods;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -66,7 +67,8 @@ public class UserController {
                      @RequestParam("age") @Min(value = 0, message = "年龄不能为负数") int age,
                      @RequestParam("id") int id,
                      @RequestParam("password") String password,
-                     @Nullable @RequestParam("imagePath") String imagePath) {
+                     @Nullable @RequestParam("imagePath") String imagePath,
+                     @Nullable @RequestParam("balance") Integer balance) {
         // check
         if (getOne(name) != null) {
             // registered
@@ -83,6 +85,10 @@ public class UserController {
         // 创建用户 (with 头像)
         if (imagePath != null) {
             user.setImagePath(imagePath);
+        }
+        user.setBalance(0);
+        if (balance != null) {
+            user.setBalance(balance);
         }
         User save = userDao.save(user);
         return save;
@@ -131,4 +137,13 @@ public class UserController {
         System.out.println(fileName);
         return "images/" + fileName;
     }
+
+    // 删除一个用户
+    @GetMapping("/changeBalance")
+    @Transactional
+    public String changeBalance(@RequestParam("name") String name, Integer changeNum, boolean isPositive) {
+        User user = userDao.findByName(name);
+        return "您现在的余额:" + user.changeBalance(changeNum, isPositive);
+    }
+
 }

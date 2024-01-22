@@ -251,5 +251,37 @@ class SpringbootInitApplicationTests {
         assertNull(response5);
 
     }
+    @Test
+    void TestUserBalance() {
+        // 先把数据库清空
+        clearSchema("");
+        // 存入User数据
+        String url = "http://localhost:" + port + "/add?name=Wang&age=18&id=001&password=123456&balance=1000000";
+        // 得到返回值
+        User response = restTemplate.getForObject(url, User.class);
+        // 数据存入正常
+        assertEquals("Wang", response.getName());
+        assertEquals(18 , response.getAge());
+        assertEquals(1, response.getId());
+        assertEquals("123456", response.getPassword());
+        assertEquals(1000_000, response.getBalance());
+
+        url = "http://localhost:" + port + "/changeBalance?name=Wang&changeNum=500000&isPositive=false";
+        String response2 = restTemplate.getForObject(url, String.class);
+        assert response2.contains("500000");
+
+        url = "http://localhost:" + port + "/getOne?name=Wang";
+        User response3 = restTemplate.getForObject(url, User.class);
+
+        // 可以正常查询到所需数据
+        assertEquals("Wang", response3.getName());
+        assertEquals(18 , response3.getAge());
+        assertEquals(1, response3.getId());
+        assertEquals("123456", response3.getPassword());
+        assertEquals(500000, response3.getBalance());
+
+        // 最后再次清空数据库, 有始有终.
+        clearSchema("");
+    }
 
 }

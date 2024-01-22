@@ -22,6 +22,8 @@ public class User {
 
     static final String defaultPath = "E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\_default_user_image.png";
 
+    private Integer balance; // 账户余额
+
     public User() {
     }
     public String getName() {
@@ -62,6 +64,33 @@ public class User {
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+        if (this.balance >= 500_000_000) {
+            this.balance = 500_000_000;
+        }
+    }
+
+    public int changeBalance(int changeNum, boolean isPositive) {
+        if (isPositive) {
+            if ((long) (this.balance) + (long) changeNum >= 500_000_000L) {
+                this.balance = 500_000_000;
+            } else {
+                this.balance += changeNum;
+            }
+        }
+        else {
+            if (this.balance >= -5_000) {
+                this.balance -= changeNum;
+            }
+        }
+        return this.balance;
     }
 
     public String toString() {
