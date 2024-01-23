@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import org.hibernate.mapping.Collection;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Min;
+//import javax.validation.constraints.Min;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,7 @@ public class User {
     @Id
     private String name;
     private String password;
-    @Min(value = 0, message = "年龄不能为负数")
+//    @Min(value = 0, message = "年龄不能为负数")
     private int age;
     private int id;
 

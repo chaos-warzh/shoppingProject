@@ -110,8 +110,8 @@ public class GoodsController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = goodsName + suffixName;
         // 文件上传路径
-//        String filePath = "E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\" + fileName;
-        String filePath = "C:\\Users\\86139\\Desktop\\springboot-init\\src\\main\\resources\\static\\images\\" + fileName;
+        String filePath = "E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\" + fileName;
+//        String filePath = "C:\\Users\\86139\\Desktop\\springboot-init\\src\\main\\resources\\static\\images\\" + fileName;
         try {
             // 保存文件
             file.transferTo(new File(filePath));

@@ -8,8 +8,9 @@ import jakarta.persistence.Table;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
+//import javax.validation.Valid;
+//import javax.validation.constraints.Min;
+
 
 @Table(name = "goods")
 @Entity
@@ -18,8 +19,9 @@ public class Goods {
     @Id
     private String name;
     private String description;
-    @Min(value = 0, message = "价格不能为负数")
+//    @Min(value = 0, message = "价格不能为负数")
     private int price;
+    @Deprecated
     private boolean status;
     private String imagePath;
     private GoodsType type;

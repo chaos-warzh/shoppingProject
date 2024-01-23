@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Min;
+//import javax.validation.constraints.Min;
 import java.io.File;
 import java.io.StreamCorruptedException;
 import java.net.URLDecoder;
@@ -75,7 +75,7 @@ public class UserController {
     // 添加一个用户 (用于用户注册)
     @GetMapping("/add")
     public User add (@RequestParam("name") String name,
-                     @RequestParam("age") @Min(value = 0, message = "年龄不能为负数") int age,
+                     @RequestParam("age") /**@Min(value = 0, message = "年龄不能为负数")*/ int age,
                      @RequestParam("id") int id,
                      @RequestParam("password") String password,
                      @Nullable @RequestParam("imagePath") String imagePath,

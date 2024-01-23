@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.Min;
+//import javax.validation.constraints.Min;
 
 /**
  * 订单类
@@ -22,7 +22,7 @@ public class Order {
   private String orderName;
   private String name;
   private String description;
-  @Min(value = 0, message = "价格不能为负数")
+//  @Min(value = 0, message = "价格不能为负数")
   private int price;
   private boolean status;
   private String imagePath;
