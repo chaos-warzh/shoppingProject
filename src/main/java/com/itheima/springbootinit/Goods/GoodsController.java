@@ -44,8 +44,6 @@ public class GoodsController {
     public Goods addGoods(@RequestParam("name") String name,
                           @RequestParam("description") String description,
                           @RequestParam("price") int price,
-                          @RequestParam("status") boolean status,
-                          @RequestParam("imagePath") String imagePath,
                           @RequestParam("type") GoodsType type,
                           @Nullable @RequestParam("restNum") Integer restNum,
                           @Nullable @RequestParam("passwordOfGoods") String passwordOfGoods) {
@@ -68,8 +66,6 @@ public class GoodsController {
         goods.setName(name);
         goods.setDescription(description);
         goods.setPrice(price);
-        goods.setStatus(status);
-        goods.setImagePath(imagePath);
         goods.setType(type);
         goods.setRestNum(restNum);
         goods.setPasswordOfGoods(passwordOfGoods);
@@ -98,6 +94,8 @@ public class GoodsController {
         return all;
     }
 
+
+
     @Transactional
     @PostMapping("/updateGoodsImage") // 更新商品图片
     public String updateGoodsImage(MultipartFile file, String goodsName) {
@@ -112,7 +110,8 @@ public class GoodsController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         fileName = goodsName + suffixName;
         // 文件上传路径
-        String filePath = "E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\" + fileName;
+//        String filePath = "E:\\projects\\shoppingProject\\src\\main\\resources\\static\\images\\" + fileName;
+        String filePath = "C:\\Users\\86139\\Desktop\\springboot-init\\src\\main\\resources\\static\\images\\" + fileName;
         try {
             // 保存文件
             file.transferTo(new File(filePath));
@@ -121,8 +120,9 @@ public class GoodsController {
         }
         // 更新数据库
         Goods goods = goodsDao.findByName(goodsName);
-        System.out.println(goods.toString());
-        goods.setImagePath(fileName);
+//        System.out.println(goods.toString());
+        String webPath = "http://localhost:8080/images/" + fileName;
+        goods.setImagePath(webPath);
 
         System.out.println(fileName);
         return "images/" + fileName;
