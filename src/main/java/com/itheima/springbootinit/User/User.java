@@ -1,6 +1,7 @@
 package com.itheima.springbootinit.User;
 
 import com.itheima.springbootinit.Goods.Goods;
+import com.itheima.springbootinit.orders.Order;
 import jakarta.persistence.*;
 import org.hibernate.mapping.Collection;
 import org.springframework.validation.annotation.Validated;
@@ -32,7 +33,11 @@ public class User {
     @OneToMany(targetEntity = Goods.class)
     private List<Goods> shoppingCart;
 
+    @OneToMany(targetEntity = Order.class)
+    private List<Order> orders;
+
     public User() {
+        orders = new ArrayList<>();
         shoppingCart = new ArrayList<>();
     }
     public String getName() {
@@ -124,6 +129,31 @@ public class User {
 
     public String clearCart() {
         shoppingCart.clear();
+        return "全部删除成功";
+    }
+
+    public List<Order> showOrders() {
+        return Collections.unmodifiableList(orders);
+    }
+
+    public String addToOrders(Order order) {
+        if (order != null) {
+            orders.add(order);
+            return "添加成功";
+        }
+        return "添加失败";
+    }
+
+    public String deleteFromOrders(Order order) {
+        if (order != null) {
+            orders.remove(order);
+            return "删除成功";
+        }
+        return "删除失败";
+    }
+
+    public String clearOrders() {
+        orders.clear();
         return "全部删除成功";
     }
 

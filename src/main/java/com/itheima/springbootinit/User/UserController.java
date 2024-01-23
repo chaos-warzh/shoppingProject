@@ -2,6 +2,8 @@ package com.itheima.springbootinit.User;
 
 import com.itheima.springbootinit.Goods.Goods;
 import com.itheima.springbootinit.Goods.GoodsDao;
+import com.itheima.springbootinit.orders.Order;
+import com.itheima.springbootinit.orders.OrderDao;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     GoodsDao goodsDao;
+
+    @Autowired
+    OrderDao orderDao;
 
     // 根据名字查找用户
     @GetMapping("/getOne")
@@ -178,5 +183,46 @@ public class UserController {
         return user.showCart();
     }
 
+    /** - Order - */
+
+    // 添加订单
+    @GetMapping("/addToOrders")
+    @Transactional
+    public String addToOrders(@RequestParam("userName") String userName, @RequestParam("orderName") String orderName) {
+        User user = userDao.findByName(userName);
+        Order order = orderDao.findByOrderName(orderName);
+        return user.addToOrders(order);
+    }
+
+    // 删除订单
+    @GetMapping("/deleteFromOrders")
+    public String deleteFromOrders(@RequestParam("userName") String userName, @RequestParam("orderName") String orderName) {
+        User user = userDao.findByName(userName);
+        Order order = orderDao.findByOrderName(orderName);
+        return user.deleteFromOrders(order);
+    }
+
+    // 展示订单
+    @GetMapping("/showOrders")
+    @Transactional
+    public List<Order> showOrders(@RequestParam("userName") String userName) {
+        User user = userDao.findByName(userName);
+        return user.showOrders();
+    }
+
+    // 清空订单
+    @GetMapping("/deleteAllOrders")
+    public void deleteAllOrders() {
+        orderDao.deleteAll();
+    }
+
+    @GetMapping("/addOrder")
+    public Order addOrder(@RequestParam("goodsName") String goodsName,
+                          @RequestParam("isBought") boolean isBought) {
+        Goods goods = goodsDao.findByName(goodsName);
+        Order order = new Order(goods, isBought);
+        Order save = orderDao.save(order);
+        return save;
+    }
 
 }
