@@ -66,4 +66,13 @@ public class OrderController {
         return save;
     }
 
+  @GetMapping("/findByIsBought")
+  public List<Order> findByIsBought(@RequestParam("userName") String userName,
+                                    @RequestParam("isBought") boolean isBought) {
+    List<Order> ordersRequested = orderDao.findByIsBought(isBought);
+    List<Order> ordersOfUser = showOrders(userName);
+    ordersRequested.retainAll(ordersOfUser);
+    return ordersRequested;
+  }
+
 }

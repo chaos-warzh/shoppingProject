@@ -391,7 +391,11 @@ class SpringbootInitApplicationTests {
         String response4 = restTemplate.getForObject(url, String.class);
         assertEquals("添加成功", response4);
 
-        url = "http://localhost:" + port + "/showOrders?userName=Wang";
+//        url = "http://localhost:" + port + "/showOrders?userName=Wang";
+//        ParameterizedTypeReference<List<Order>> responseType = new ParameterizedTypeReference<List<Order>>() {};
+//        ResponseEntity<List<Order>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
+//        List<Order> response5 = responseEntity.getBody();
+        url = "http://localhost:" + port + "/findByIsBought?userName=Wang&isBought=true";
         ParameterizedTypeReference<List<Order>> responseType = new ParameterizedTypeReference<List<Order>>() {};
         ResponseEntity<List<Order>> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, responseType);
         List<Order> response5 = responseEntity.getBody();
